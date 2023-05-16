@@ -125,9 +125,12 @@ func Test_ForAndAppendWithInterface(t *testing.T) {
 // Go语言会直接使用 runtime.memclrNoHeapPointers 或者 runtime.memclrHasPointers 清除目标数组内存空间中的全部数据，并在执行完成后更新遍历数组的索引
 func Test_CleanArr(t *testing.T) {
 	arr := []int{1, 2, 3}
+	t.Logf(" arr: %+v", arr) // arr: [1 2 3]
 	for i := range arr {
 		arr[i] = 0
 	}
+	arr = append(arr, 4)
+	t.Logf(" arr: %+v", arr) // arr: [0 0 0 4]
 
 	m := map[string]int{"1": 1, "2": 2, "3": 3}
 	for k := range m {
