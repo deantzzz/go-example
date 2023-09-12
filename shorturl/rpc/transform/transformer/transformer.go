@@ -13,14 +13,17 @@ import (
 )
 
 type (
-	ExpandReq   = transform.ExpandReq
-	ExpandResp  = transform.ExpandResp
-	ShortenReq  = transform.ShortenReq
-	ShortenResp = transform.ShortenResp
+	ExpandReq     = transform.ExpandReq
+	ExpandResp    = transform.ExpandResp
+	ShortenReq    = transform.ShortenReq
+	ShortenResp   = transform.ShortenResp
+	SpeedTestReq  = transform.SpeedTestReq
+	SpeedTestResp = transform.SpeedTestResp
 
 	Transformer interface {
 		Expand(ctx context.Context, in *ExpandReq, opts ...grpc.CallOption) (*ExpandResp, error)
 		Shorten(ctx context.Context, in *ShortenReq, opts ...grpc.CallOption) (*ShortenResp, error)
+		SpeedTest(ctx context.Context, in *SpeedTestReq, opts ...grpc.CallOption) (*SpeedTestResp, error)
 	}
 
 	defaultTransformer struct {
@@ -42,4 +45,9 @@ func (m *defaultTransformer) Expand(ctx context.Context, in *ExpandReq, opts ...
 func (m *defaultTransformer) Shorten(ctx context.Context, in *ShortenReq, opts ...grpc.CallOption) (*ShortenResp, error) {
 	client := transform.NewTransformerClient(m.cli.Conn())
 	return client.Shorten(ctx, in, opts...)
+}
+
+func (m *defaultTransformer) SpeedTest(ctx context.Context, in *SpeedTestReq, opts ...grpc.CallOption) (*SpeedTestResp, error) {
+	client := transform.NewTransformerClient(m.cli.Conn())
+	return client.SpeedTest(ctx, in, opts...)
 }

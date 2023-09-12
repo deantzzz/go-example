@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Transformer_Expand_FullMethodName  = "/transform.transformer/expand"
-	Transformer_Shorten_FullMethodName = "/transform.transformer/shorten"
+	Transformer_Expand_FullMethodName    = "/transform.transformer/expand"
+	Transformer_Shorten_FullMethodName   = "/transform.transformer/shorten"
+	Transformer_SpeedTest_FullMethodName = "/transform.transformer/speedTest"
 )
 
 // TransformerClient is the client API for Transformer service.
@@ -29,6 +30,7 @@ const (
 type TransformerClient interface {
 	Expand(ctx context.Context, in *ExpandReq, opts ...grpc.CallOption) (*ExpandResp, error)
 	Shorten(ctx context.Context, in *ShortenReq, opts ...grpc.CallOption) (*ShortenResp, error)
+	SpeedTest(ctx context.Context, in *SpeedTestReq, opts ...grpc.CallOption) (*SpeedTestResp, error)
 }
 
 type transformerClient struct {
@@ -57,12 +59,22 @@ func (c *transformerClient) Shorten(ctx context.Context, in *ShortenReq, opts ..
 	return out, nil
 }
 
+func (c *transformerClient) SpeedTest(ctx context.Context, in *SpeedTestReq, opts ...grpc.CallOption) (*SpeedTestResp, error) {
+	out := new(SpeedTestResp)
+	err := c.cc.Invoke(ctx, Transformer_SpeedTest_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TransformerServer is the server API for Transformer service.
 // All implementations must embed UnimplementedTransformerServer
 // for forward compatibility
 type TransformerServer interface {
 	Expand(context.Context, *ExpandReq) (*ExpandResp, error)
 	Shorten(context.Context, *ShortenReq) (*ShortenResp, error)
+	SpeedTest(context.Context, *SpeedTestReq) (*SpeedTestResp, error)
 	mustEmbedUnimplementedTransformerServer()
 }
 
@@ -75,6 +87,9 @@ func (UnimplementedTransformerServer) Expand(context.Context, *ExpandReq) (*Expa
 }
 func (UnimplementedTransformerServer) Shorten(context.Context, *ShortenReq) (*ShortenResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Shorten not implemented")
+}
+func (UnimplementedTransformerServer) SpeedTest(context.Context, *SpeedTestReq) (*SpeedTestResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SpeedTest not implemented")
 }
 func (UnimplementedTransformerServer) mustEmbedUnimplementedTransformerServer() {}
 
@@ -125,6 +140,24 @@ func _Transformer_Shorten_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Transformer_SpeedTest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SpeedTestReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TransformerServer).SpeedTest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Transformer_SpeedTest_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TransformerServer).SpeedTest(ctx, req.(*SpeedTestReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Transformer_ServiceDesc is the grpc.ServiceDesc for Transformer service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -139,6 +172,10 @@ var Transformer_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "shorten",
 			Handler:    _Transformer_Shorten_Handler,
+		},
+		{
+			MethodName: "speedTest",
+			Handler:    _Transformer_SpeedTest_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

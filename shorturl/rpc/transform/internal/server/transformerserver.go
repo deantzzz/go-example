@@ -31,3 +31,8 @@ func (s *TransformerServer) Shorten(ctx context.Context, in *transform.ShortenRe
 	l := logic.NewShortenLogic(ctx, s.svcCtx)
 	return l.Shorten(in)
 }
+
+func (s *TransformerServer) SpeedTest(ctx context.Context, in *transform.SpeedTestReq) (*transform.SpeedTestResp, error) {
+	l := logic.NewSpeedTestLogic(ctx, s.svcCtx)
+	return l.SpeedTest(in)
+}
