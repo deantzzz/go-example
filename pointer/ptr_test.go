@@ -24,3 +24,15 @@ func TestReceiver(t *testing.T) {
 	fmt.Println(got) // panic: runtime error: invalid memory address or nil pointer dereference
 	// 指针不能调用非指针方法
 }
+
+func TestFuncSetPtrNil(t *testing.T) {
+	ptr := &Ptr{
+		name: "123",
+	}
+	setNil(ptr)
+	fmt.Println(ptr) // &{123}
+}
+
+func setNil(ptr *Ptr) {
+	ptr = nil
+}
